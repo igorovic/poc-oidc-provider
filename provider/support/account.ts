@@ -1,3 +1,4 @@
+//@ts-nocheck
 const store = new Map();
 const logins = new Map();
 const { nanoid } = require("nanoid");

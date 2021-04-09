@@ -1,8 +1,12 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const { Provider } = require("oidc-provider");
+import { Provider } from "oidc-provider";
 const acc = require("./support/account");
 const PORT = 8001;
+
+// config
+const providerHostname = "provider.local";
+const siteHostname = "site.local";
 
 const configuration = {
   // ... see the available options in Configuration options section
@@ -78,7 +82,7 @@ const configuration = {
     {
       client_id: "foo",
       client_secret: "bar",
-      redirect_uris: [`https://localhost/cb`],
+      redirect_uris: [`http://${siteHostname}/cb`],
       grant_types: ["refresh_token", "authorization_code"],
       // + other client properties
     },
@@ -86,24 +90,27 @@ const configuration = {
   // ...
 };
 
-const oidc = new Provider(`http://localhost:${PORT}`, configuration);
+const oidc = new Provider(`http://${providerHostname}/`, configuration);
 const oidcCallback = oidc.callback();
 
-app.get("/interaction/:uid", async (req, res) => {
-  try {
-    console.log("GET interaction");
-    const details = await oidc.interactionDetails(req, res);
-    console.log("Interaction details: %o", details);
-    return oidcCallback(req, res);
-  } catch (err) {
-    console.error(err);
+app.get(
+  "/interaction/:uid",
+  async (req: express.Request, res: express.Response) => {
+    try {
+      console.log("GET interaction");
+      const details = await oidc.interactionDetails(req, res);
+      console.log("Interaction details: %o", details);
+      return oidcCallback(req, res);
+    } catch (err) {
+      console.error(err);
+    }
   }
-});
+);
 
 app.use("/", oidcCallback);
 
 app.listen(PORT, () => {
   console.log(
-    `oidc-provider listening on port ${PORT}, check http://localhost:${PORT}/.well-known/openid-configuration`
+    `oidc-provider listening on port ${PORT}, check http://${providerHostname}:${PORT}/.well-known/openid-configuration`
   );
 });

@@ -1,0 +1,14 @@
+{
+	"files": [
+		{
+			"path": "node_modules/oidc-provider/lib/helpers/defaults.js",
+			"bookmarks": [
+				{
+					"line": 1864,
+					"column": 10,
+					"label": "default routes"
+				}
+			]
+		}
+	]
+}
