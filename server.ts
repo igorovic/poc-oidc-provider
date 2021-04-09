@@ -86,7 +86,7 @@ const configuration = {
   // ...
 };
 
-const oidc = new Provider(`http://localhost:${PORT}`, configuration);
+const oidc = new Provider(`http://localhost:${PORT}/`, configuration);
 const oidcCallback = oidc.callback();
 
 app.get("/interaction/:uid", async (req, res) => {
