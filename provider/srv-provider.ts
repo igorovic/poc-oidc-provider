@@ -1,6 +1,7 @@
 import express from "express";
 const app = express();
-import { Provider } from "oidc-provider";
+import { Provider, Configuration } from "oidc-provider";
+import colors from "colors";
 const acc = require("./support/account");
 const PORT = 8001;
 
@@ -8,7 +9,7 @@ const PORT = 8001;
 const providerHostname = "provider.local";
 const siteHostname = "site.local";
 
-const configuration = {
+const configuration: Configuration = {
   // ... see the available options in Configuration options section
   /* async findAccount(ctx, id) {
     console.log("find accounts");
@@ -46,6 +47,7 @@ const configuration = {
 
     deviceFlow: { enabled: true }, // defaults to false
     revocation: { enabled: true }, // defaults to false
+    introspection: { enabled: true },
   },
   jwks: {
     keys: [
@@ -78,12 +80,15 @@ const configuration = {
       },
     ],
   },
+  responseTypes: ["none", "code", "id_token", "id_token token"],
   clients: [
     {
       client_id: "foo",
       client_secret: "bar",
-      redirect_uris: [`http://${siteHostname}/cb`],
-      grant_types: ["refresh_token", "authorization_code"],
+      redirect_uris: [`https://${siteHostname}/cb`],
+      response_types: ["id_token token"],
+      //grant_types: ["refresh_token", "authorization_code", "implicit"],
+      grant_types: ["authorization_code", "implicit"],
       // + other client properties
     },
   ],
@@ -92,6 +97,18 @@ const configuration = {
 
 const oidc = new Provider(`http://${providerHostname}/`, configuration);
 const oidcCallback = oidc.callback();
+
+let demoLogger = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  console.log("REQUEST", colors.blue.bgWhite(req.url));
+  console.log("RESPONSE", res.statusCode, res.getHeaders());
+  next();
+};
+
+app.use(demoLogger);
 
 app.get(
   "/interaction/:uid",

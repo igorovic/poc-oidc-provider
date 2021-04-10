@@ -1,6 +1,11 @@
-
+site.local {
+    reverse_proxy localhost:3000
+}
 http://site.local {
     reverse_proxy localhost:3000
+}
+provider.local {
+    reverse_proxy localhost:8001
 }
 http://provider.local {
     reverse_proxy localhost:8001

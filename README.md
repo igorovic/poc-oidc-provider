@@ -15,6 +15,7 @@ https://caddyserver.com/docs/
 # How to start
 
 - start Burp Suite and it's proxy
+- start caddy proxy. At repo root => `caddy run`
 - start provider `npm run provider`
 - start site `npm run site`
 - Use burp suite Chromium browser to navigate to `http://site.local/login`
@@ -31,3 +32,8 @@ You may need to configure your `/etc/hosts` to resolve
 127.0.0.1 site.local
 127.0.0.1 provider.local
 ```
+
+# Bookmarks
+
+- Some source code are bookmarked. Check file `.vscode/bookmarks.json`.
+- Bookmarked with vscode extension [Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.Bookmarks)
