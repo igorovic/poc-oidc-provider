@@ -3,7 +3,7 @@ import openId = require("openid-client");
 import colors from "colors";
 import config from "./oidc.config.json";
 import { custom } from "openid-client";
-import { HttpProxyAgent } from "hpagent";
+import { burpProxy } from "../utils/burpProxy";
 
 const PORT = 3000;
 const code_verifier = openId.generators.codeVerifier();
@@ -26,14 +26,7 @@ const code_challenge = openId.generators.codeChallenge(code_verifier);
 
 custom.setHttpOptionsDefaults({
   agent: {
-    http: new HttpProxyAgent({
-      keepAlive: true,
-      keepAliveMsecs: 1000,
-      maxSockets: 256,
-      maxFreeSockets: 256,
-      scheduling: "lifo",
-      proxy: "http://127.0.0.1:8080", // <= burp suite proxy
-    }),
+    http: burpProxy,
   },
 });
 
@@ -52,7 +45,7 @@ app.get("/login", async function (req, res) {
     client_id: config.client_id,
     client_secret: config.client_secret,
     redirect_uris: [callbackUrl],
-    response_types: ["id_token token"],
+    response_types: ["code"],
   });
 
   authorizeUrl = client.authorizationUrl({
@@ -71,7 +64,7 @@ app.get("/cb", function (req, res) {
     .oauthCallback(callbackUrl, params, {
       code_verifier,
       state: "123-123",
-      response_type: "code idtoken token",
+      response_type: "id_token",
     }) // => Promise
     .then(function (tokenSet) {
       TokenSet = tokenSet;

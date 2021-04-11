@@ -2,7 +2,7 @@ import express from "express";
 import openId = require("openid-client");
 import colors from "colors";
 import { custom } from "openid-client";
-import { HttpProxyAgent } from "hpagent";
+import { burpProxy } from "../utils/burpProxy";
 
 const PORT = 3000;
 const code_verifier = openId.generators.codeVerifier();
@@ -31,14 +31,7 @@ const code_challenge = openId.generators.codeChallenge(code_verifier);
 
 custom.setHttpOptionsDefaults({
   agent: {
-    http: new HttpProxyAgent({
-      keepAlive: true,
-      keepAliveMsecs: 1000,
-      maxSockets: 256,
-      maxFreeSockets: 256,
-      scheduling: "lifo",
-      proxy: "http://127.0.0.1:37819", // <= burp suite proxy
-    }),
+    http: burpProxy,
   },
 });
 

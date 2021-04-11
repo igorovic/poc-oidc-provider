@@ -52,6 +52,24 @@ const configuration: Configuration = {
   jwks: {
     keys: [
       {
+        kty: "RSA",
+        n:
+          "uypw8CKN9I6edI58si1fHF3F_ZUtjmArN_rTSq6zuHpTWA81W0LR4Xr_6NT4BOatrm1KlNFp7YrnyH1CO4_I4IkXlyFydvTDesDMFlFVLnB_vJ2ZtHsX8Styg1qdgo-bHJXAwRC94g245m63ZzSnliN1u8iYnO-8DkG4agAbbWGJAEOXxUG-wFlndpb9SgCQGLGFFrxsqfOKrBN0HytuE5W_uR-sKvgulKZ4ftEP_Hl7beLZyh37zFF5OZLDskqZ8ehMP6Slpvme7nJFh3jlhV77qm2pJbZP0HTMJDo_FjNXYZrjlZGWPc5H2_xLEjXvoZxJPJzs0kI_FSNGDXFuDw",
+        e: "AQAB",
+        d:
+          "D9PI9SWW54Vf9O9PsCmSD24GnikNTyrmvLcjQv9_Byyg-6NdmbgO04h5N5E63_851LQ9SFRlJsdGTnf5L9w62nH9YrRbX5_XH_xJxeFe2Kx-wM56_v4hyi0oY983zqCiN0qaoDjwNbt_VU0riTi0q0eYXybZcPv85R-9nokfyKH_uL2o8yep0uoO31vYcm1Kqw5uF_cjZkc_7dv7tn-yMVcPYAXoD2y8Zzc0vqcjbzhCK8qW4PXApklqvYpOKZyGsJClbhzPldj-ny5FYoqrRX3zrx3WyawVxkiz01H6bNp-yKotRBdDwJbjg8S2mMYD6y3P8DSyzJM_xYy7bAkbsQ",
+        p:
+          "7EiOfKkGj4Qt54IdJnwox-XaT-vJy6XSuQ7x2UXnTuNmk75Nt0zoo_gP1ulYpsCaK5nxh0aE3nW6d5sQJ5ZkpslzdYXItzXO_hfYQL9BmqUQgjIdy8PZxzBKJV49lXEVc8EbidHjg7prUQyNC0MXkFm5mYd9HNB0YkcMq4EdZKU",
+        q:
+          "ysikfaXbbZGKHMKN_PJY4uHElcjes_tp-n1DKRmX-dEP0fJC8KYJ0k4UL09DSRE0VaVYZLwb26aADBtd8k70oA2aWPRT9DtfFN3ENnKqIt2pyhK1xTMqn_tr3tmsk4bFleCRjcPXGUOcbEtQGTc1b8M7gnAVO_JfoXTpwHuspaM",
+        dp:
+          "tj4wSE5GVSNqFIny2eAhxCyw-buvZXd81GeGekLEacBTOdkqMBsNxIpsDSLl0Zf0UXTnKaNmj_7V17Kt_xqsf0gZ2adabJUAFlNl5GqfuxtdZE4rVSK2MkA4sCHD9iPGnAVxrBdLGCsM4vJ_RxR0dE4ALT6nbTYKzlJmn1FyzlE",
+        dq:
+          "mSy2E7MU7M7i5JaRamAlhDvFot74Wjuu8edss78BbVLeAFhe-Chzgsg3twTIbojwX0FmY7Ez2dcLIhoJ_N5nKf8cd9UXFYVDbR-W9wnmOi_18Q3w_-SGbhIciVkjYsyKs4vOZqdn801--s5o0qNBWgq_COhhIccTNYJ6j0rcPsE",
+        qi:
+          "bEyYSVysNUy9hAOu3UANQpyaRk9nhxEkE4ZmMqfEPQm7ooLtURGPPqTeWRMdox6UuHjuxfv2VhT9TzvLBnziQ5luIc4-9qXyDUrv6hqiXQJY4v7K2AJ9QkChT6WTexdpOS7PaT5LUEvUnvKY90-5pC-p9ccgLW6rxXu3_A-d9QU",
+      },
+      /* {
         d:
           "VEZOsY07JTFzGTqv6cC2Y32vsfChind2I_TTuvV225_-0zrSej3XLRg8iE_u0-3GSgiGi4WImmTwmEgLo4Qp3uEcxCYbt4NMJC7fwT2i3dfRZjtZ4yJwFl0SIj8TgfQ8ptwZbFZUlcHGXZIr4nL8GXyQT0CK8wy4COfmymHrrUoyfZA154ql_OsoiupSUCRcKVvZj2JHL2KILsq_sh_l7g2dqAN8D7jYfJ58MkqlknBMa2-zi5I0-1JUOwztVNml_zGrp27UbEU60RqV3GHjoqwI6m01U7K0a8Q_SQAKYGqgepbAYOA-P4_TLl5KC4-WWBZu_rVfwgSENwWNEhw8oQ",
         dp:
@@ -77,7 +95,7 @@ const configuration: Configuration = {
         use: "sig",
         x: "FWZ9rSkLt6Dx9E3pxLybhdM6xgR5obGsj5_pqmnz5J4",
         y: "_n8G69C-A2Xl4xUW2lF0i8ZGZnk_KPYrhv4GbTGu5G4",
-      },
+      }, */
     ],
   },
   responseTypes: ["none", "code", "id_token", "id_token token"],
@@ -86,9 +104,9 @@ const configuration: Configuration = {
       client_id: "foo",
       client_secret: "bar",
       redirect_uris: [`https://${siteHostname}/cb`],
-      response_types: ["id_token token"],
+      response_types: ["id_token token", "code", "id_token"],
       //grant_types: ["refresh_token", "authorization_code", "implicit"],
-      grant_types: ["authorization_code", "implicit"],
+      grant_types: ["authorization_code", "implicit", "refresh_token"],
       // + other client properties
     },
   ],
