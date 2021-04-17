@@ -1,6 +1,7 @@
 import { HttpProxyAgent } from "hpagent";
 
 const burpProxy = new HttpProxyAgent({
+  timeout: 30000,
   keepAlive: true,
   keepAliveMsecs: 1000,
   maxSockets: 256,

@@ -20,7 +20,30 @@ const configuration: Configuration = {
       },
     };
   }, */
+  extraTokenClaims(ctx, token) {
+    console.log(colors.bgGreen.red("TOKEN"), token);
+    return {
+      extra: "email",
+    };
+  },
+
+  formats: {
+    customizers: {
+      async jwt(ctx: any, token: any, jwt: any) {
+        console.log(colors.yellow.bgRed("JWT_FORMATER"));
+        jwt.payload.extra = "bar";
+        return jwt;
+      },
+    },
+  },
   findAccount: acc.findAccount,
+  cookies: {
+    keys: [
+      "some secret key",
+      "and also the old rotated away some time ago",
+      "and one more",
+    ],
+  },
   claims: {
     address: ["address"],
     email: ["email", "email_verified"],
@@ -41,6 +64,7 @@ const configuration: Configuration = {
       "website",
       "zoneinfo",
     ],
+    oidc: ["sub", "email", "profile"],
   },
   features: {
     devInteractions: { enabled: true }, // defaults to true
@@ -98,15 +122,15 @@ const configuration: Configuration = {
       }, */
     ],
   },
-  responseTypes: ["none", "code", "id_token", "id_token token"],
+  responseTypes: ["none", "code", "id_token"],
   clients: [
     {
       client_id: "foo",
       client_secret: "bar",
       redirect_uris: [`https://${siteHostname}/cb`],
-      response_types: ["id_token token", "code", "id_token"],
+      response_types: ["code"],
       //grant_types: ["refresh_token", "authorization_code", "implicit"],
-      grant_types: ["authorization_code", "implicit", "refresh_token"],
+      grant_types: ["authorization_code", "refresh_token"],
       // + other client properties
     },
   ],
@@ -114,6 +138,7 @@ const configuration: Configuration = {
 };
 
 const oidc = new Provider(`http://${providerHostname}/`, configuration);
+oidc.proxy = true;
 const oidcCallback = oidc.callback();
 
 let demoLogger = (

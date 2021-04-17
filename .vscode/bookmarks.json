@@ -1,54 +1,54 @@
 {
-  "files": [
-    {
-      "path": "node_modules/oidc-provider/lib/helpers/defaults.js",
-      "bookmarks": [
-        {
-          "line": 1864,
-          "column": 10,
-          "label": "default routes"
-        }
-      ]
-    },
-    {
-      "path": "node_modules/openid-client/types/index.d.ts",
-      "bookmarks": [
-        {
-          "line": 52,
-          "column": 20,
-          "label": "Client Auth Methods"
-        }
-      ]
-    },
-    {
-      "path": "node_modules/openid-client/lib/client.js",
-      "bookmarks": [
-        {
-          "line": 1225,
-          "column": 6,
-          "label": "Maybe grant verification?"
-        }
-      ]
-    },
-    {
-      "path": "node_modules/openid-client/lib/helpers/consts.js",
-      "bookmarks": [
-        {
-          "line": 0,
-          "column": 12,
-          "label": "Discovery urls"
-        }
-      ]
-    },
-    {
-      "path": "node_modules/oidc-provider/lib/helpers/client_schema.js",
-      "bookmarks": [
-        {
-          "line": 28,
-          "column": 13,
-          "label": "Endpoints with client Authentication required"
-        }
-      ]
-    }
-  ]
+	"files": [
+		{
+			"path": "node_modules/oidc-provider/lib/helpers/defaults.js",
+			"bookmarks": [
+				{
+					"line": 1864,
+					"column": 10,
+					"label": "default routes"
+				}
+			]
+		},
+		{
+			"path": "node_modules/openid-client/types/index.d.ts",
+			"bookmarks": [
+				{
+					"line": 52,
+					"column": 20,
+					"label": "Client Auth Methods"
+				}
+			]
+		},
+		{
+			"path": "node_modules/openid-client/lib/client.js",
+			"bookmarks": [
+				{
+					"line": 1225,
+					"column": 6,
+					"label": "Maybe grant verification?"
+				}
+			]
+		},
+		{
+			"path": "node_modules/openid-client/lib/helpers/consts.js",
+			"bookmarks": [
+				{
+					"line": 0,
+					"column": 12,
+					"label": "Discovery urls"
+				}
+			]
+		},
+		{
+			"path": "node_modules/oidc-provider/lib/helpers/client_schema.js",
+			"bookmarks": [
+				{
+					"line": 28,
+					"column": 13,
+					"label": "Endpoints with client Authentication required"
+				}
+			]
+		}
+	]
 }
