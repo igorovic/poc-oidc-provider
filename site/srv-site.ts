@@ -3,6 +3,7 @@ import openId = require("openid-client");
 import colors from "colors";
 import config from "./oidc.config.json";
 import { custom } from "openid-client";
+import jwt = require("jsonwebtoken");
 import { burpProxy } from "../utils/burpProxy";
 
 const PORT = 3000;
@@ -39,6 +40,7 @@ app.get("/login", async function (req, res) {
     authorization_endpoint: `http://${providerHostname}/auth`,
     token_endpoint: `http://${providerHostname}/token`,
     userinfo_endpoint: `http://${providerHostname}/me`,
+    jwks_uri: `http://${providerHostname}/jwks`,
   });
 
   client = new Issuer.Client({
@@ -61,16 +63,20 @@ app.get("/login", async function (req, res) {
 app.get("/cb", function (req, res) {
   const params = client.callbackParams(req);
   client
-    .oauthCallback(callbackUrl, params, {
+    .callback(callbackUrl, params, {
       code_verifier,
       state: "123-123",
-      response_type: "id_token",
+      response_type: "code",
     }) // => Promise
     .then(function (tokenSet) {
       TokenSet = tokenSet;
       if (TokenSet) {
         console.log(colors.cyan("received and validated tokens"));
         console.log("%o", tokenSet);
+        if (tokenSet.id_token) {
+          const decoded = jwt.decode(tokenSet.id_token);
+          console.log(colors.bgGreen.red("ID_TOKEN decoded"), decoded);
+        }
         console.log(
           "acces_token Expires in: %s ",
           colors.cyan(String(TokenSet.expires_in))
