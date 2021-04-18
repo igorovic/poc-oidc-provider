@@ -8,6 +8,7 @@ import { burpProxy } from "../utils/burpProxy";
 
 const PORT = 3000;
 const code_verifier = openId.generators.codeVerifier();
+console.log("CODE VERIFIER", code_verifier);
 const app = express();
 
 // site config
@@ -24,6 +25,7 @@ let TokenSet: openId.TokenSet;
 let endSessionUrl: string;
 
 const code_challenge = openId.generators.codeChallenge(code_verifier);
+console.log("CODE CHALLENGE", code_challenge);
 
 custom.setHttpOptionsDefaults({
   agent: {
