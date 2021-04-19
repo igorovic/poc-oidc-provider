@@ -10,16 +10,11 @@
       "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon.cmd",
-        "runtimeArgs": [
-          "--config",
-          "win-nodemon.json",
-          "--watch",
-          "provider"
-        ],
+        "runtimeArgs": ["--config", "win-nodemon.json", "--watch", "provider"],
         "args": []
       },
       "env": {
-        "DEBUG": "oidc-provider:error*,oidc-provider:server_error*,debug:*"
+        "DEBUG": "oidc-provider:error*,oidc-provider:server_error*,debug*,-debug:interactions*"
       },
       "args": ["--watch", "provider"],
       "skipFiles": ["<node_internals>/**"],

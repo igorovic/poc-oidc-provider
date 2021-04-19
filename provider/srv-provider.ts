@@ -1,9 +1,15 @@
 import express from "express";
 const app = express();
-import { Provider, Configuration } from "oidc-provider";
+import {
+  Provider,
+  Configuration,
+  KoaContextWithOIDC,
+  ResourceServer,
+} from "oidc-provider";
 import colors from "colors";
 import Debug = require("debug");
-const dbg = Debug("debug:");
+const dbg = Debug("debug");
+const dbgI = dbg.extend("interactions");
 const acc = require("./support/account");
 const PORT = 8001;
 
@@ -11,6 +17,11 @@ const PORT = 8001;
 const providerHostname = "provider.local";
 const siteHostname = "site.local";
 
+const Resources: { [k: string]: ResourceServer } = {
+  "https://site.local/": {
+    scope: "orders",
+  },
+};
 const configuration: Configuration = {
   // ... see the available options in Configuration options section
   /* async findAccount(ctx, id) {
@@ -58,7 +69,7 @@ const configuration: Configuration = {
     address: ["address"],
     email: ["email", "email_verified"],
     phone: ["phone_number", "phone_number_verified"],
-    extra: ["my-extra"],
+    //extra: ["my-extra"],
     profile: [
       "birthdate",
       "family_name",
@@ -75,15 +86,30 @@ const configuration: Configuration = {
       "website",
       "zoneinfo",
     ],
-    openid: ["sub", "profile", "email", "extra"], // default: ["sub"]
+    openid: ["sub", "profile", "email"], // default: ["sub"] - will add those claims to the id_token
   },
   features: {
     devInteractions: { enabled: true }, // defaults to true
-
+    claimsParameter: { enabled: true }, // defaults to false
     deviceFlow: { enabled: true }, // defaults to false
     revocation: { enabled: true }, // defaults to false
     introspection: { enabled: true },
     userinfo: { enabled: true }, // when disabled id_token conforms to scope claims
+    resourceIndicators: {
+      enabled: true,
+      async defaultResource(ctx: KoaContextWithOIDC) {
+        //if(oneOf) return oneOf;
+        dbg("%o", ctx);
+        return "https://site.local/";
+      },
+      async getResourceServerInfo(
+        ctx: KoaContextWithOIDC,
+        resourceIndicator: string,
+        client: any
+      ) {
+        return Resources[resourceIndicator];
+      },
+    },
   },
   jwks: {
     keys: [
@@ -159,7 +185,7 @@ app.get(
   async (req: express.Request, res: express.Response) => {
     try {
       const details = await oidc.interactionDetails(req, res);
-      dbg("%O", details);
+      dbgI("%O", details);
       return oidcCallback(req, res);
     } catch (err) {
       console.error(err);
