@@ -37,6 +37,12 @@ custom.setHttpOptionsDefaults({
  * redirects to the Issuer /authorize endpoint
  */
 app.get("/login", async function (req, res) {
+  /**
+   * The issuer is configured manually.
+   * However you can automate this process with the `discovery` url.
+   * `Issuer.discover`
+   *
+   */
   const Issuer = new openId.Issuer({
     issuer: `http://${providerHostname}/`,
     authorization_endpoint: `http://${providerHostname}/auth`,
@@ -49,7 +55,7 @@ app.get("/login", async function (req, res) {
     client_id: config.client_id,
     client_secret: config.client_secret,
     redirect_uris: [callbackUrl],
-    response_types: ["code"],
+    response_types: ["code id_token"],
   });
 
   authorizeUrl = client.authorizationUrl({
@@ -68,7 +74,7 @@ app.get("/cb", function (req, res) {
     .callback(callbackUrl, params, {
       code_verifier,
       state: "123-123",
-      response_type: "code",
+      response_type: "code id_token",
     }) // => Promise
     .then(function (tokenSet) {
       TokenSet = tokenSet;

@@ -9,7 +9,7 @@
       "restart": true,
       "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
       "env": {
-        "DEBUG": "oidc-provider:error*,oidc-provider:server_error*"
+        "DEBUG": "oidc-provider:error*,oidc-provider:server_error*,debug:*"
       },
       "args": ["--watch", "provider"],
       "skipFiles": ["<node_internals>/**"],
