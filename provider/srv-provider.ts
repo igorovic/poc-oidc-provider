@@ -2,6 +2,8 @@ import express from "express";
 const app = express();
 import { Provider, Configuration } from "oidc-provider";
 import colors from "colors";
+import Debug = require("debug");
+const dbg = Debug("debug:");
 const acc = require("./support/account");
 const PORT = 8001;
 
@@ -21,18 +23,26 @@ const configuration: Configuration = {
     };
   }, */
   extraTokenClaims(ctx, token) {
-    console.log(colors.bgGreen.red("TOKEN"), token);
+    console.log(colors.bgGreen.red("extraToken Claims"));
+    dbg("%O", token);
     return {
       extra: "email",
+      claims: ["email"],
     };
   },
-
+  conformIdTokenClaims: false, // default: true
   formats: {
     customizers: {
       async jwt(ctx: any, token: any, jwt: any) {
-        console.log(colors.yellow.bgRed("JWT_FORMATER"));
-        jwt.payload.extra = "bar";
-        return jwt;
+        dbg(colors.yellow.bgRed("JWT_FORMATER"));
+        const newJWT = {
+          ...jwt,
+          payload: {
+            ...jwt.payload,
+            extra: "hello",
+          },
+        };
+        return newJWT;
       },
     },
   },
@@ -48,6 +58,7 @@ const configuration: Configuration = {
     address: ["address"],
     email: ["email", "email_verified"],
     phone: ["phone_number", "phone_number_verified"],
+    extra: ["my-extra"],
     profile: [
       "birthdate",
       "family_name",
@@ -64,7 +75,7 @@ const configuration: Configuration = {
       "website",
       "zoneinfo",
     ],
-    oidc: ["sub", "email", "profile"],
+    openid: ["sub", "profile", "email", "extra"], // default: ["sub"]
   },
   features: {
     devInteractions: { enabled: true }, // defaults to true
@@ -72,6 +83,7 @@ const configuration: Configuration = {
     deviceFlow: { enabled: true }, // defaults to false
     revocation: { enabled: true }, // defaults to false
     introspection: { enabled: true },
+    userinfo: { enabled: true }, // when disabled id_token conforms to scope claims
   },
   jwks: {
     keys: [
@@ -95,16 +107,15 @@ const configuration: Configuration = {
       },
     ],
   },
-  responseTypes: ["none", "code", "id_token", "code token"],
+  responseTypes: ["none", "code", "id_token", "code token", "code id_token"], // `code token` enables implicit flow
   clients: [
     {
       client_id: "foo",
       client_secret: "bar",
       redirect_uris: [`https://${siteHostname}/cb`],
-      response_types: ["code"],
+      response_types: ["code", "code id_token"],
       //grant_types: ["refresh_token", "authorization_code", "implicit"],
       grant_types: ["authorization_code", "refresh_token"],
-      // + other client properties
     },
     {
       client_id: "pkce1",
@@ -121,24 +132,23 @@ const configuration: Configuration = {
       grant_types: ["authorization_code", "implicit"],
     },
   ],
-  // ...
 };
 
 const oidc = new Provider(`http://${providerHostname}/`, configuration);
 oidc.proxy = true;
 const oidcCallback = oidc.callback();
 
-/* oidc.on("server_error", (ctx, err) => {
-  console.log(colors.red(err.message), err);
-}); */
+oidc.on("server_error", (ctx, err) => {
+  dbg("%s %o", colors.red(err.message), err);
+});
 
 let demoLogger = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  console.log("REQUEST", colors.blue.bgWhite(req.url));
-  console.log("RESPONSE", res.statusCode, res.getHeaders());
+  dbg(colors.black.bgGreen("REQUEST"), colors.cyan(req.url));
+  //console.log("RESPONSE", res.statusCode, res.getHeaders());
   next();
 };
 
@@ -148,9 +158,8 @@ app.get(
   "/interaction/:uid",
   async (req: express.Request, res: express.Response) => {
     try {
-      console.log("GET interaction");
       const details = await oidc.interactionDetails(req, res);
-      console.log("Interaction details: %o", details);
+      dbg("%O", details);
       return oidcCallback(req, res);
     } catch (err) {
       console.error(err);
